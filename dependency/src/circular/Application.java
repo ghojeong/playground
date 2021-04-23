@@ -3,7 +3,12 @@ package circular;
 public class Application {
     public static void main(String[] args) {
         Human pyro = new Pyro();
-        Food pizza = new Pizza();
-        pyro.eat(pizza);
+        Human chef = new Chef();
+
+        Food chefPizza = Pizza.madeBy(chef);
+        Food pyroPizza = Pizza.madeBy(pyro);
+
+        pyro.eat(chefPizza);
+        pyro.eat(pyroPizza);
     }
 }
