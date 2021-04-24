@@ -7,10 +7,10 @@ public class Pizza implements Food {
         this.chef = chef;
     }
 
-    public static Pizza madeBy(Human chef) {
+    public static Pizza madeBy(Chef chef) {
         Pizza pizza = new Pizza(chef);
         validate(pizza);
-        return pizza;
+        return chef.makePizza();
     }
 
     private static void validate(Pizza pizza) {

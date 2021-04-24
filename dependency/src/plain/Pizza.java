@@ -1,8 +1,7 @@
 package plain;
 
 public class Pizza {
-    @Override
-    public String toString() {
+    public String serialize() {
         return "피자";
     }
 }
