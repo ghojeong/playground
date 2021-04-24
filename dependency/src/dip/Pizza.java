@@ -1,8 +1,7 @@
 package dip;
 
-public class Pizza implements Food {
-    @Override
-    public String toString() {
+public class Pizza {
+    public String serialize() {
         return "피자";
     }
 }
