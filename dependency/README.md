@@ -8,11 +8,12 @@
 
 - 의존성 흐름: import 하는 방향, 실선 ->
     - 뭔가 잘못되었을 때 내리 갈굼하는 방향
-- 제어권 흐름: 코드가 실행되는 방향, 점선 --> (어떤 클래스의 코드가 실행되고 있나)
+- 제어권 흐름: new 하는 방향, 실제 객체의 코드가 실행되는 방향, 점선 --> (어떤 클래스의 코드가 실행되고 있나)
     - 누가 실행을 하고 있나 == 누가 실행 흐름의 제어권을 가지고 있나
 
 ## 의존성 역전(Dependency Inversion)
 
+- 로버트 C 마틴, "클린 아키텍처", p.48
 - 의존성 역전은 Dependency Flow 를 역전시킨 것이다.
 - Abstraction 을 통해 Dependency Injection 을 하면 의존성이 역전된다.
 
@@ -25,6 +26,8 @@ Dependency Segregation == Decoupling == Abstraction
 포비님의 TDD 과제를 하면, 의존성 역전이 없으면 개고생을 하게 되는지 몸소 느낄 수 있습니다.
 
 ## 제어권 역전(Inversion Of Control)
+
+- 이일민, "토비의 스프링 3.1", p.93
 
 IoC는 Control Flow 를 역전시킨 것이다.
 
