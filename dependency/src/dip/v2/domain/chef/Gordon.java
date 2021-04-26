@@ -1,4 +1,4 @@
-package dip.v2.chef;
+package dip.v2.domain.chef;
 
 public class Gordon extends Chef {
     @Override

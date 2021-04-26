@@ -1,10 +1,10 @@
-package dip.v2;
+package ioc;
 
-import dip.v2.domain.chef.Chef;
-import dip.v2.domain.chef.Gordon;
-import dip.v2.domain.chef.Honux;
-import dip.v2.domain.chef.Pyro;
-import dip.v2.domain.food.Food;
+import ioc.domain.chef.Chef;
+import ioc.domain.chef.Gordon;
+import ioc.domain.chef.Honux;
+import ioc.domain.chef.Pyro;
+import ioc.domain.food.Food;
 
 public class Server {
     public void run() {

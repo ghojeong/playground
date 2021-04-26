@@ -1,4 +1,4 @@
-package dip.v2.chef;
+package dip.v2.domain.chef;
 
 public class Pyro extends Chef {
     @Override

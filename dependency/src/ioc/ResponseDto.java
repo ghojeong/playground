@@ -1,7 +1,7 @@
-package dip.v2;
+package ioc;
 
-import dip.v2.domain.chef.Chef;
-import dip.v2.domain.food.Food;
+import ioc.domain.chef.Chef;
+import ioc.domain.food.Food;
 
 public class ResponseDto {
     private final String chefName;

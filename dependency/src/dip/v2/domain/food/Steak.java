@@ -1,4 +1,4 @@
-package dip.v2.food;
+package dip.v2.domain.food;
 
 public class Steak implements Food {
     @Override

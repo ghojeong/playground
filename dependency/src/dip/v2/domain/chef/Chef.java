@@ -1,9 +1,9 @@
-package dip.v2.chef;
+package dip.v2.domain.chef;
 
-import dip.v2.food.Food;
-import dip.v2.food.Pasta;
-import dip.v2.food.Pizza;
-import dip.v2.food.Steak;
+import dip.v2.domain.food.Food;
+import dip.v2.domain.food.Pasta;
+import dip.v2.domain.food.Pizza;
+import dip.v2.domain.food.Steak;
 
 public abstract class Chef {
     public abstract String getName();

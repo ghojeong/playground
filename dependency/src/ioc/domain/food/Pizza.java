@@ -1,4 +1,4 @@
-package dip.v2.food;
+package ioc.domain.food;
 
 public class Pizza implements Food {
     @Override
