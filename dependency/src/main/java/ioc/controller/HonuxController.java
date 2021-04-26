@@ -13,7 +13,7 @@ public class HonuxController {
 
     @GetMapping("/pizza")
     public ResponseDto getPizza() {
-        return ResponseDto.from(honux, honux.createPasta());
+        return ResponseDto.from(honux, honux.createPizza());
     }
 
     @GetMapping("/pasta")

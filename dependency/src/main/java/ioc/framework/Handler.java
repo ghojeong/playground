@@ -24,11 +24,12 @@ class Handler {
 
     String handle(BeanFactory beanFactory, String request, Object... objects) {
         String defaultResponse = "잘못된 요청입니다.";
-        Object targetBean = beanFactory.getBean(targets.get(request));
-        Method handler = handlers.get(request);
-        if (targetBean == null || handler == null) {
+        Class<?> targetClass = targets.get(request);
+        if (targetClass == null) {
             return defaultResponse;
         }
+        Object targetBean = beanFactory.getBean(targetClass);
+        Method handler = handlers.get(request);
         try {
             return handler.invoke(targetBean, objects).toString();
         } catch (IllegalAccessException e) {

@@ -13,7 +13,7 @@ public class PyroController {
 
     @GetMapping("/pizza")
     public ResponseDto getPizza() {
-        return ResponseDto.from(pyro, pyro.createPasta());
+        return ResponseDto.from(pyro, pyro.createPizza());
     }
 
     @GetMapping("/pasta")

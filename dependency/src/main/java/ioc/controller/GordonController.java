@@ -13,7 +13,7 @@ public class GordonController {
 
     @GetMapping("/pizza")
     public ResponseDto getPizza() {
-        return ResponseDto.from(gordon, gordon.createPasta());
+        return ResponseDto.from(gordon, gordon.createPizza());
     }
 
     @GetMapping("/pasta")
