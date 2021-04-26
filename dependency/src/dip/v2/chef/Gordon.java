@@ -1,25 +1,8 @@
 package dip.v2.chef;
 
-import dip.v2.food.Pasta;
-import dip.v2.food.Pizza;
-import dip.v2.food.Steak;
-
-public class Gordon implements Chef {
+public class Gordon extends Chef {
     @Override
-    public Pizza createPizza() {
-        System.out.println("고든 램지가 피자를 만듭니다.");
-        return new Pizza();
-    }
-
-    @Override
-    public Pasta createPasta() {
-        System.out.println("고든 램지가 파스타를 만듭니다.");
-        return new Pasta();
-    }
-
-    @Override
-    public Steak createSteak() {
-        System.out.println("고든 램지가 스테이크를 만듭니다.");
-        return new Steak();
+    public String getName() {
+        return "고든 램지";
     }
 }

@@ -9,7 +9,8 @@ public class Server {
         if (request.equals("GET /pizza")) {
             Gordon chef = new Gordon();
             Pizza pizza = chef.createPizza();
-            socket.writeResponse(pizza.serialize());
+            String response = pizza.serialize();
+            socket.writeResponse(response);
         } else {
             socket.writeResponse("잘못된 요청입니다.");
         }
