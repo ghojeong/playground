@@ -1,4 +1,4 @@
-package ioc;
+package ioc.framework;
 
 import java.util.Scanner;
 
