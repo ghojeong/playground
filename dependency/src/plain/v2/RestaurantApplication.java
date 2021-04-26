@@ -1,4 +1,4 @@
-package dip;
+package plain.v2;
 
 public class RestaurantApplication {
     public static void main(String[] args) {

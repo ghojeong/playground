@@ -1,4 +1,4 @@
-package dip;
+package plain.v2;
 
 import java.util.Scanner;
 

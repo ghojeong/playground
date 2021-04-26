@@ -1,4 +1,4 @@
-package plain;
+package plain.v2;
 
 public class Pizza {
     public String serialize() {

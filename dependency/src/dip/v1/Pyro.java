@@ -1,4 +1,4 @@
-package circular;
+package dip.v1;
 
 public class Pyro implements Client {
     @Override
