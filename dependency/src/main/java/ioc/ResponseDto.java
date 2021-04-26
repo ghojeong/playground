@@ -16,7 +16,8 @@ public class ResponseDto {
         return new ResponseDto(chef.getName(), food.getName());
     }
 
-    public String serialize() {
+    @Override
+    public String toString() {
         return String.format("%s가 만든 %s", chefName, foodName);
     }
 }

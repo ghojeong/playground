@@ -1,9 +1,8 @@
 package ioc.framework;
 
-import ioc.controller.PyroController;
-
 class ApplicationContext {
     private final BeanFactory beanFactory;
+    private final Handler handler = new Handler();
 
     private ApplicationContext(BeanFactory beanFactory) {
         this.beanFactory = beanFactory;
@@ -13,11 +12,12 @@ class ApplicationContext {
         String rootPackage = primarySource.getPackage().getName();
         Loader loader = Loader.from(rootPackage);
         BeanFactory beanFactory = BeanFactory.from(loader);
-        return new ApplicationContext(beanFactory);
+        ApplicationContext context = new ApplicationContext(beanFactory);
+        loader.loadControllers().forEach(context.handler::put);
+        return context;
     }
 
-    String getResponse(String request) {
-//        return "잘못된 요청입니다.";
-        return ((PyroController) beanFactory.getBean(PyroController.class)).getPasta().serialize();
+    String getResponse(String request, Object... objects) {
+        return handler.handle(beanFactory, request, objects);
     }
 }

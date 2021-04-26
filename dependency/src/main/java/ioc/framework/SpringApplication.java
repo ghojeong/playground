@@ -4,11 +4,9 @@ public class SpringApplication {
     public static void run(Class<?> primarySource, String... args) {
         ApplicationContext context = ApplicationContext.from(primarySource);
 
-        run(context);
-
-//        while (true) {
-//            run(context);
-//        }
+        while (true) {
+            run(context);
+        }
     }
 
     private static void run(ApplicationContext context) {
