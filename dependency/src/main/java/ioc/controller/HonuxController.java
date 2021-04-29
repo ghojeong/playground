@@ -4,24 +4,26 @@ import ioc.ResponseDto;
 import ioc.domain.chef.Honux;
 import ioc.framework.annotation.Autowired;
 import ioc.framework.annotation.Controller;
-import ioc.framework.annotation.GetMapping;
+import ioc.framework.annotation.RequestMapping;
+
+import static ioc.framework.annotation.RequestMethod.GET;
 
 @Controller("/honux")
 public class HonuxController {
     @Autowired
     private Honux honux;
 
-    @GetMapping("/pizza")
+    @RequestMapping(method = GET, value = "/pizza")
     public ResponseDto getPizza() {
         return ResponseDto.from(honux, honux.createPizza());
     }
 
-    @GetMapping("/pasta")
+    @RequestMapping(method = GET, value = "/pasta")
     public ResponseDto getPasta() {
         return ResponseDto.from(honux, honux.createPasta());
     }
 
-    @GetMapping("/steak")
+    @RequestMapping(method = GET, value = "/steak")
     public ResponseDto getSteak() {
         return ResponseDto.from(honux, honux.createSteak());
     }

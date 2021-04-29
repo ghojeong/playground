@@ -1,7 +1,8 @@
 package ioc.framework;
 
 import ioc.framework.annotation.Controller;
-import ioc.framework.annotation.GetMapping;
+import ioc.framework.annotation.RequestMapping;
+import ioc.framework.annotation.RequestMethod;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -13,10 +14,21 @@ class Handler {
     private final Map<String, Method> handlers = new ConcurrentHashMap<>();
 
     void put(Class<?> controller) {
-        String controllerValue = controller.getAnnotation(Controller.class).value();
         for (Method method : controller.getDeclaredMethods()) {
-            String mappingValue = method.getAnnotation(GetMapping.class).value();
-            String request = String.format("GET %s%s", controllerValue, mappingValue);
+            put(controller, method);
+        }
+    }
+
+    private void put(Class<?> controller, Method method) {
+        String path = controller.getAnnotation(Controller.class).value();
+        RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
+        if (requestMapping == null) {
+            return;
+        }
+        for (RequestMethod requestMethod : requestMapping.method()) {
+            String httpMethod = requestMethod.name();
+            String endpoint = requestMapping.value();
+            String request = String.format("%s %s%s", httpMethod, path, endpoint);
             targets.put(request, controller);
             handlers.put(request, method);
         }
