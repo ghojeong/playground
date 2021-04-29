@@ -1,8 +1,6 @@
 package ioc.framework;
 
-import ioc.framework.annotation.Controller;
-import ioc.framework.annotation.RequestMapping;
-import ioc.framework.annotation.RequestMethod;
+import ioc.framework.annotation.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -15,11 +13,18 @@ class Handler {
 
     void put(Class<?> controller) {
         for (Method method : controller.getDeclaredMethods()) {
-            put(controller, method);
+            putGetMapping(controller, method);
+            putPostMapping(controller, method);
+            putRequestMapping(controller, method);
         }
     }
 
-    private void put(Class<?> controller, Method method) {
+    private void put(String request, Class<?> controller, Method method) {
+        targets.put(request, controller);
+        handlers.put(request, method);
+    }
+
+    private void putRequestMapping(Class<?> controller, Method method) {
         String path = controller.getAnnotation(Controller.class).value();
         RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
         if (requestMapping == null) {
@@ -29,9 +34,32 @@ class Handler {
             String httpMethod = requestMethod.name();
             String endpoint = requestMapping.value();
             String request = String.format("%s %s%s", httpMethod, path, endpoint);
-            targets.put(request, controller);
-            handlers.put(request, method);
+            put(request, controller, method);
         }
+    }
+
+    private void putGetMapping(Class<?> controller, Method method) {
+        String path = controller.getAnnotation(Controller.class).value();
+        GetMapping getMapping = method.getAnnotation(GetMapping.class);
+        if (getMapping == null) {
+            return;
+        }
+        String httpMethod = RequestMethod.GET.name();
+        String endpoint = getMapping.value();
+        String request = String.format("%s %s%s", httpMethod, path, endpoint);
+        put(request, controller, method);
+    }
+
+    private void putPostMapping(Class<?> controller, Method method) {
+        String path = controller.getAnnotation(Controller.class).value();
+        PostMapping postMapping = method.getAnnotation(PostMapping.class);
+        if (postMapping == null) {
+            return;
+        }
+        String httpMethod = RequestMethod.GET.name();
+        String endpoint = postMapping.value();
+        String request = String.format("%s %s%s", httpMethod, path, endpoint);
+        put(request, controller, method);
     }
 
     String handle(BeanFactory beanFactory, String request, Object... objects) {
