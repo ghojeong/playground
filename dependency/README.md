@@ -23,7 +23,7 @@
 
 Dependency Segregation == Decoupling == Abstraction
 
-포비님의 TDD 과제를 하면, 의존성 역전이 없으면 개고생을 하게 되는지 몸소 느낄 수 있습니다.
+포비님의 TDD 과제를 하면, 의존성 역전이 없으면 어떤 개고생을 하게 되는지 몸소 느낄 수 있습니다.
 
 ## 제어권 역전(Inversion Of Control)
 
