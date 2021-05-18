@@ -1,21 +1,22 @@
-package com.oauth;
+package com.oauth.controller;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
+import com.oauth.annotation.LoginRequired;
 import com.oauth.dto.*;
+import com.oauth.exception.TokenCreationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @RestController
 @RequestMapping("/api")
@@ -29,23 +30,14 @@ public class OauthController {
     @Value("${github.client.secret}")
     private String CLIENT_SECRET;
 
-    // FIXME: jwt 와 accessCode 를 어떻게 다루어야 할까?
-    private final Map<String, GithubAccessTokenResponse> loggedInUser = new ConcurrentHashMap<>();
-
     @GetMapping("/hello")
-    public ResponseEntity<MessageResponse> getHello(@RequestHeader("authorization") String authorization) {
-        // FIXME: 인증과 관련된 로직을 Interceptor 로 분리해야한다.
-        String[] splitAuth = authorization.split(" ");
-        String bearer = splitAuth[0];
-        String token = splitAuth[1];
-        if (bearer.equals("Bearer") && loggedInUser.containsKey(token)) {
-            return ResponseEntity.ok().body(new MessageResponse("안녕하세요! 로그인된 유저이군요!"));
-        }
-        return ResponseEntity.status(UNAUTHORIZED).body(new MessageResponse("인증되지 않은 유저입니다."));
+    @LoginRequired
+    public MessageResponse getHello() {
+        return new MessageResponse("안녕하세요! 로그인 한 유저는 언제나 환영합니다!");
     }
 
     @PostMapping("/auth")
-    public ResponseEntity<AuthResponse> auth(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<AuthResponse> auth(@RequestBody AuthRequest authRequest, HttpServletRequest request) {
         String code = authRequest.getCode();
         RestTemplate restTemplate = new RestTemplate();
         GithubAccessTokenResponse githubAccessTokenResponse = getAccessToken(code, restTemplate);
@@ -53,7 +45,9 @@ public class OauthController {
         UserResponse user = getUserFromGitHub(accessToken, restTemplate);
 
         String token = createJwt(user);
-        loggedInUser.put(token, githubAccessTokenResponse);
+
+        HttpSession session = request.getSession();
+        session.setAttribute(token, githubAccessTokenResponse);
         return ResponseEntity.status(CREATED).body(new AuthResponse(token));
     }
 
@@ -66,9 +60,8 @@ public class OauthController {
         ResponseEntity<GithubAccessTokenResponse> response = restTemplate
                 .exchange(request, GithubAccessTokenResponse.class);
 
-        // FIXME: 커스텀 Exception 으로 정의 필요
         return Optional.ofNullable(response.getBody())
-                .orElseThrow(() -> new RuntimeException("Access Token 획득 실패"));
+                .orElseThrow(() -> new TokenCreationException("Access Token 획득 실패"));
     }
 
     private UserResponse getUserFromGitHub(String accessToken, RestTemplate gitHubRequest) {
@@ -81,9 +74,8 @@ public class OauthController {
         ResponseEntity<UserResponse> response = gitHubRequest
                 .exchange(request, UserResponse.class);
 
-        // FIXME: 커스텀 Exception 으로 정의 필요
         return Optional.ofNullable(response.getBody())
-                .orElseThrow(() -> new RuntimeException("유저 정보 획득 실패"));
+                .orElseThrow(() -> new TokenCreationException("유저 정보 획득 실패"));
     }
 
     private String createJwt(UserResponse user) {
@@ -95,7 +87,7 @@ public class OauthController {
                     .withIssuer("jwtTest")
                     .sign(algorithm);
         } catch (JWTCreationException exception) {
-            throw new RuntimeException("JWT 생성 실패");
+            throw new TokenCreationException("JWT 생성 실패");
         }
     }
 }
