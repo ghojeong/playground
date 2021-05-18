@@ -1,6 +1,8 @@
 # OAuth 2.0
 
-하고자 하는 것: GitHub 로 로그인한 사용자 정보를 로그인 한 후에 보여준다.
+## 프론트 코드 읽는 순서
+
+- [index.html](./src/main/resources/static/index.html) -> [callback.html](./src/main/resources/static/callback.html) -> [home.html](./src/main/resources/static/home.html) 순으로 읽는다.
 
 ## 참고 링크
 

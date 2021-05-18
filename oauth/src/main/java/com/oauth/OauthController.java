@@ -33,11 +33,15 @@ public class OauthController {
     private final Map<String, GithubAccessTokenResponse> loggedInUser = new ConcurrentHashMap<>();
 
     @GetMapping("/hello")
-    public ResponseEntity<String> getHello(String token) {
-        if (loggedInUser.containsKey(token)) {
-            return ResponseEntity.ok().body("안녕하세요! 로그인된 유저이군요!");
+    public ResponseEntity<MessageResponse> getHello(@RequestHeader("authorization") String authorization) {
+        // FIXME: 인증과 관련된 로직을 Interceptor 로 분리해야한다.
+        String[] splitAuth = authorization.split(" ");
+        String bearer = splitAuth[0];
+        String token = splitAuth[1];
+        if (bearer.equals("Bearer") && loggedInUser.containsKey(token)) {
+            return ResponseEntity.ok().body(new MessageResponse("안녕하세요! 로그인된 유저이군요!"));
         }
-        return ResponseEntity.status(UNAUTHORIZED).body("인증되지 않은 유저입니다.");
+        return ResponseEntity.status(UNAUTHORIZED).body(new MessageResponse("인증되지 않은 유저입니다."));
     }
 
     @PostMapping("/auth")

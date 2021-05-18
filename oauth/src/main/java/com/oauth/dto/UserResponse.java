@@ -7,7 +7,7 @@ public class UserResponse {
     private String login;
     private String name;
 
-    @JsonGetter("githubId")
+    @JsonGetter("login")
     public String getLogin() {
         return login;
     }
