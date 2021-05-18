@@ -5,7 +5,6 @@ import com.oauth.dto.*;
 import com.oauth.util.TokenUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -30,16 +29,15 @@ public class OauthController {
     @PostMapping("/auth")
     public ResponseEntity<AuthResponse> auth(@RequestBody AuthRequest authRequest, HttpServletRequest request) {
         String code = authRequest.getCode();
-        RestTemplate restTemplate = new RestTemplate();
 
-        GithubAccessTokenResponse githubAccessTokenResponse = tokenUtil.getAccessToken(code, restTemplate);
+        GithubAccessTokenResponse githubAccessTokenResponse = tokenUtil.getAccessToken(code);
         String accessToken = githubAccessTokenResponse.getAccessToken();
 
-        UserResponse user = tokenUtil.getUserFromGitHub(accessToken, restTemplate);
-        String token = tokenUtil.createJwt(user);
+        UserResponse user = tokenUtil.getUserFromGitHub(accessToken);
+        String jwt = tokenUtil.createJwt(user);
 
         HttpSession session = request.getSession();
-        session.setAttribute(token, githubAccessTokenResponse);
-        return ResponseEntity.status(CREATED).body(new AuthResponse(token));
+        session.setAttribute(jwt, githubAccessTokenResponse);
+        return ResponseEntity.status(CREATED).body(new AuthResponse(jwt));
     }
 }

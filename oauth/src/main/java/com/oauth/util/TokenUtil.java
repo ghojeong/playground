@@ -19,6 +19,7 @@ import java.util.Optional;
 public class TokenUtil {
     private static final String GITHUB_ACCESS_TOKEN_URI = "https://github.com/login/oauth/access_token";
     private static final String GITHUB_USER_URI = "https://api.github.com/user";
+    private static RestTemplate restTemplate = new RestTemplate();
 
     @Value("${github.client.id}")
     private String CLIENT_ID;
@@ -26,9 +27,7 @@ public class TokenUtil {
     @Value("${github.client.secret}")
     private String CLIENT_SECRET;
 
-    private TokenUtil() {}
-
-    public GithubAccessTokenResponse getAccessToken(String code, RestTemplate restTemplate) {
+    public GithubAccessTokenResponse getAccessToken(String code) {
         RequestEntity<GithubAccessTokenRequest> request = RequestEntity
                 .post(GITHUB_ACCESS_TOKEN_URI)
                 .header("Accept", "application/json")
@@ -41,14 +40,14 @@ public class TokenUtil {
                 .orElseThrow(() -> new TokenCreationException("Access Token 획득 실패"));
     }
 
-    public UserResponse getUserFromGitHub(String accessToken, RestTemplate gitHubRequest) {
+    public UserResponse getUserFromGitHub(String accessToken) {
         RequestEntity<Void> request = RequestEntity
                 .get(GITHUB_USER_URI)
                 .header("Accept", "application/json")
                 .header("Authorization", "token " + accessToken)
                 .build();
 
-        ResponseEntity<UserResponse> response = gitHubRequest
+        ResponseEntity<UserResponse> response = restTemplate
                 .exchange(request, UserResponse.class);
 
         return Optional.ofNullable(response.getBody())

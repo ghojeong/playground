@@ -24,7 +24,8 @@ public class LoginInterceptor implements HandlerInterceptor {
     // FIXME: Session 을 사용하지 않는 인증방법은 없을까?
     private void authenticate(String authorization, HttpSession session) {
         String[] splitAuth = authorization.split(" ");
-        if (splitAuth.length < 1 || !splitAuth[0].equals("Bearer")) {
+        String tokenType = splitAuth[0].toLowerCase();
+        if (splitAuth.length < 1 || !tokenType.equals("bearer")) {
             throw new TokenAuthenticationException("잘못된 Authorization Header 입니다.");
         }
         String token = splitAuth[1];
