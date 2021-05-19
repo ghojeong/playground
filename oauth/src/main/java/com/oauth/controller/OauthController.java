@@ -2,7 +2,7 @@ package com.oauth.controller;
 
 import com.oauth.annotation.LoginRequired;
 import com.oauth.dto.*;
-import com.oauth.util.TokenUtil;
+import com.oauth.service.OauthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,10 +14,10 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RestController
 @RequestMapping("/api")
 public class OauthController {
-    private final TokenUtil tokenUtil;
+    private final OauthService oauthService;
 
-    public OauthController(TokenUtil tokenUtil) {
-        this.tokenUtil = tokenUtil;
+    public OauthController(OauthService oauthService) {
+        this.oauthService = oauthService;
     }
 
     @GetMapping("/hello")
@@ -30,11 +30,11 @@ public class OauthController {
     public ResponseEntity<AuthResponse> auth(@RequestBody AuthRequest authRequest, HttpServletRequest request) {
         String code = authRequest.getCode();
 
-        GithubAccessTokenResponse githubAccessTokenResponse = tokenUtil.getAccessToken(code);
+        GithubAccessTokenResponse githubAccessTokenResponse = oauthService.getAccessToken(code);
         String accessToken = githubAccessTokenResponse.getAccessToken();
 
-        UserResponse user = tokenUtil.getUserFromGitHub(accessToken);
-        String jwt = tokenUtil.createJwt(user);
+        UserResponse user = oauthService.getUserFromGitHub(accessToken);
+        String jwt = oauthService.createJwt(user);
 
         HttpSession session = request.getSession();
         session.setAttribute(jwt, githubAccessTokenResponse);

@@ -1,4 +1,4 @@
-package com.oauth.util;
+package com.oauth.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -10,13 +10,13 @@ import com.oauth.exception.TokenCreationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
-@Component
-public class TokenUtil {
+@Service
+public class OauthService {
     private static final String GITHUB_ACCESS_TOKEN_URI = "https://github.com/login/oauth/access_token";
     private static final String GITHUB_USER_URI = "https://api.github.com/user";
     private static RestTemplate restTemplate = new RestTemplate();
