@@ -7,6 +7,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import com.oauth.annotation.LoginRequired;
 import com.oauth.exception.TokenAuthenticationException;
+import com.oauth.util.JwtUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -47,9 +48,9 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     private void handleJwt(String token, HttpServletRequest request) {
         try {
-            Algorithm algorithm = Algorithm.HMAC256("secret");
+            Algorithm algorithm = Algorithm.HMAC256(JwtUtil.getSecret());
             JWTVerifier verifier = JWT.require(algorithm)
-                    .withIssuer("jwtIssuer")
+                    .withIssuer(JwtUtil.getIssuer())
                     .build(); //Reusable verifier instance
             DecodedJWT jwt = verifier.verify(token);
             String login = jwt.getClaim("login").asString();

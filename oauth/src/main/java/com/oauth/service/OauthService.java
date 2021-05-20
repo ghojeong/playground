@@ -7,6 +7,7 @@ import com.oauth.dto.GithubAccessTokenRequest;
 import com.oauth.dto.GithubAccessTokenResponse;
 import com.oauth.dto.UserResponse;
 import com.oauth.exception.TokenCreationException;
+import com.oauth.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -56,9 +57,9 @@ public class OauthService {
 
     public String createJwt(UserResponse user) {
         try {
-            Algorithm algorithm = Algorithm.HMAC256("secret");
+            Algorithm algorithm = Algorithm.HMAC256(JwtUtil.getSecret());
             return JWT.create()
-                    .withIssuer("jwtIssuer")
+                    .withIssuer(JwtUtil.getIssuer())
                     .withClaim("login", user.getLogin())
                     .withClaim("name", user.getName())
                     .sign(algorithm);
