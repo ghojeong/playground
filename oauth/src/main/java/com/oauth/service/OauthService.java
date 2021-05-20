@@ -58,6 +58,7 @@ public class OauthService {
         try {
             Algorithm algorithm = Algorithm.HMAC256("secret");
             return JWT.create()
+                    .withIssuer("jwtIssuer")
                     .withClaim("login", user.getLogin())
                     .withClaim("name", user.getName())
                     .sign(algorithm);
