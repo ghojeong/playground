@@ -1,12 +1,8 @@
 package com.oauth.interceptor;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.auth0.jwt.interfaces.JWTVerifier;
 import com.oauth.annotation.LoginRequired;
-import com.oauth.exception.TokenAuthenticationException;
+import com.oauth.dto.UserDto;
+import com.oauth.exception.AuthenticationException;
 import com.oauth.util.JwtUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,29 +33,18 @@ public class LoginInterceptor implements HandlerInterceptor {
         String[] splitAuth = authorization.split(" ");
         String tokenType = splitAuth[0].toLowerCase();
         if (splitAuth.length < 1 || !tokenType.equals("bearer")) {
-            throw new TokenAuthenticationException("잘못된 Authorization Header 입니다.");
+            throw new AuthenticationException("잘못된 Authorization Header 입니다.");
         }
         String token = splitAuth[1];
         handleJwt(token, request);
         if (session.getAttribute(token) == null) {
-            throw new TokenAuthenticationException("로그인하지 않은 유저입니다.");
+            throw new AuthenticationException("로그인하지 않은 유저입니다.");
         }
     }
 
     private void handleJwt(String token, HttpServletRequest request) {
-        try {
-            Algorithm algorithm = Algorithm.HMAC256(JwtUtil.getSecret());
-            JWTVerifier verifier = JWT.require(algorithm)
-                    .withIssuer(JwtUtil.getIssuer())
-                    .build(); //Reusable verifier instance
-            DecodedJWT jwt = verifier.verify(token);
-            String login = jwt.getClaim("login").asString();
-            String name = jwt.getClaim("name").asString();
-            logger.info("login:{}, name: {}", login, name);
-            request.setAttribute("login", login);
-        } catch (JWTVerificationException exception) {
-            //Invalid signature/claims
-            throw new TokenAuthenticationException("잘못된 jwt 입니다.");
-        }
+        UserDto user = JwtUtil.decodeJwt(token);
+        logger.info("login:{}, name: {}", user.getLogin(), user.getName());
+        request.setAttribute("user", user);
     }
 }

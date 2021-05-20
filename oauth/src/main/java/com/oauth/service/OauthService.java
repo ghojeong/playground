@@ -1,13 +1,9 @@
 package com.oauth.service;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTCreationException;
 import com.oauth.dto.GithubAccessTokenRequest;
 import com.oauth.dto.GithubAccessTokenResponse;
-import com.oauth.dto.UserResponse;
-import com.oauth.exception.TokenCreationException;
-import com.oauth.util.JwtUtil;
+import com.oauth.dto.UserDto;
+import com.oauth.exception.JwtException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -38,33 +34,20 @@ public class OauthService {
                 .exchange(request, GithubAccessTokenResponse.class);
 
         return Optional.ofNullable(response.getBody())
-                .orElseThrow(() -> new TokenCreationException("Access Token 획득 실패"));
+                .orElseThrow(() -> new JwtException("Access Token 획득 실패"));
     }
 
-    public UserResponse getUserFromGitHub(String accessToken) {
+    public UserDto getUserFromGitHub(String accessToken) {
         RequestEntity<Void> request = RequestEntity
                 .get(GITHUB_USER_URI)
                 .header("Accept", "application/json")
                 .header("Authorization", "token " + accessToken)
                 .build();
 
-        ResponseEntity<UserResponse> response = restTemplate
-                .exchange(request, UserResponse.class);
+        ResponseEntity<UserDto> response = restTemplate
+                .exchange(request, UserDto.class);
 
         return Optional.ofNullable(response.getBody())
-                .orElseThrow(() -> new TokenCreationException("유저 정보 획득 실패"));
-    }
-
-    public String createJwt(UserResponse user) {
-        try {
-            Algorithm algorithm = Algorithm.HMAC256(JwtUtil.getSecret());
-            return JWT.create()
-                    .withIssuer(JwtUtil.getIssuer())
-                    .withClaim("login", user.getLogin())
-                    .withClaim("name", user.getName())
-                    .sign(algorithm);
-        } catch (JWTCreationException exception) {
-            throw new TokenCreationException("JWT 생성 실패");
-        }
+                .orElseThrow(() -> new JwtException("유저 정보 획득 실패"));
     }
 }
